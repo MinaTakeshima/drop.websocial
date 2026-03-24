@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>猫屋敷クルミ — VTuber</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@300;400&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #1A1410;
+      --bg2:       #221C17;
+      --bg3:       #2C231C;
+      --cream:     #F5EBD8;
+      --cream2:    #E8D5BB;
+      --orange:    #C8743A;
+      --orange2:   #E8934E;
+      --white-fur: #FAF3E8;
+      --black-fur: #2A1F18;
+      --caramel:   #A0622A;
+      --text:      #F0E4CC;
+      --text-dim:  #9A8A78;
+      --paw:       #D4956A;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CUSTOM CURSOR ── */
+    .cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--orange2);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(200,116,58,0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s ease-out, width 0.2s, height 0.2s;
+    }
+    body:hover .cursor { opacity: 1; }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.35;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.4rem 4rem;
+      background: rgba(26,20,16,0.7);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(200,116,58,0.12);
+    }
+    .nav-logo {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.2em;
+      color: var(--cream);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .nav-logo span { color: var(--orange2); }
+    .nav-links {
+      display: flex;
+      gap: 2.4rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--orange2); }
+    .nav-btn {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      padding: 0.55rem 1.4rem;
+      border: 1px solid var(--orange);
+      color: var(--orange2);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .nav-btn:hover { background: var(--orange); color: var(--bg); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding-top: 80px;
+    }
+
+    /* 背景グラデーション */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 72% 50%, rgba(160,98,42,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(200,116,58,0.1) 0%, transparent 60%),
+        var(--bg);
+    }
+
+    /* 背景の猫足跡パターン */
+    .hero-paws {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .paw {
+      position: absolute;
+      font-size: 1.2rem;
+      opacity: 0.06;
+      color: var(--orange);
+      animation: pawFloat 8s ease-in-out infinite;
+    }
+
+    @keyframes pawFloat {
+      0%, 100% { transform: translateY(0) rotate(var(--r)); }
+      50% { transform: translateY(-12px) rotate(var(--r)); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 4rem 6rem;
+      display: grid;
+      grid-template-columns: 1fr 480px;
+      gap: 4rem;
+      align-items: center;
+      width: 100%;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .hero-left { }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.68rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--orange2);
+      border: 1px solid rgba(200,116,58,0.3);
+      padding: 0.4rem 1rem;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+
+    .hero-name {
+      font-family: 'Shippori Mincho', serif;
+      font-size: clamp(3.5rem, 7vw, 6rem);
+      font-weight: 500;
+      line-height: 1.1;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+    .hero-name .accent { color: var(--orange2); }
+
+    .hero-name-en {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--text-dim);
+      letter-spacing: 0.15em;
+      margin-bottom: 2.4rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.5s forwards;
+    }
+
+    .hero-desc {
+      font-size: 0.92rem;
+      line-height: 2.2;
+      color: var(--text-dim);
+      max-width: 420px;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.7s forwards;
+    }
+    .tag-pill {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      padding: 0.4rem 1rem;
+      background: rgba(160,98,42,0.15);
+      border: 1px solid rgba(200,116,58,0.2);
+      color: var(--cream2);
+    }
+
+    .hero-social {
+      display: flex;
+      gap: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.85s forwards;
+    }
+    .social-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.6rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .social-btn.yt {
+      background: var(--orange);
+      color: var(--bg);
+    }
+    .social-btn.yt:hover { background: var(--orange2); transform: translateY(-2px); }
+    .social-btn.x {
+      border: 1px solid rgba(200,116,58,0.3);
+      color: var(--cream2);
+    }
+    .social-btn.x:hover { border-color: var(--orange2); color: var(--orange2); }
+
+    /* キャラクター枠 */
+    .hero-right {
+      position: relative;
+      height: 580px;
+      opacity: 0;
+      animation: fadeIn 1s 0.3s forwards;
+    }
+    .chara-frame {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .chara-glow {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(200,116,58,0.25) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .chara-placeholder {
+      position: relative;
+      z-index: 2;
+      width: 360px;
+      height: 520px;
+      background: linear-gradient(160deg, rgba(160,98,42,0.12) 0%, rgba(42,31,24,0.4) 100%);
+      border: 1px solid rgba(200,116,58,0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+    /* 三毛猫カラーの装飾ライン */
+    .chara-placeholder::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--white-fur) 0%, var(--orange) 40%, var(--black-fur) 70%, var(--orange2) 100%);
+    }
+    .chara-placeholder::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--orange), transparent);
+    }
+    .chara-icon {
+      font-size: 5rem;
+      line-height: 1;
+    }
+    .chara-label {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.25em;
+      color: var(--text-dim);
+    }
+    .chara-sublabel {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: rgba(154,138,120,0.6);
+    }
+
+    /* 浮かぶバッジ */
+    .float-badge {
+      position: absolute;
+      background: var(--bg2);
+      border: 1px solid rgba(200,116,58,0.2);
+      padding: 0.8rem 1.2rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--cream2);
+      animation: badgeFloat 4s ease-in-out infinite;
+    }
+    .float-badge.b1 { top: 12%; right: -1rem; animation-delay: 0s; }
+    .float-badge.b2 { bottom: 22%; left: -2rem; animation-delay: 1.5s; }
+    .float-badge .badge-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--orange2);
+      display: block;
+      line-height: 1.2;
+    }
+    @keyframes badgeFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* ── PROFILE ── */
+    .profile {
+      padding: 8rem 6rem;
+      background: var(--bg2);
+      position: relative;
+      overflow: hidden;
+    }
+    .profile::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(160,98,42,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .profile-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 6rem;
+      align-items: start;
+    }
+    .profile-card {
+      background: var(--bg3);
+      border: 1px solid rgba(200,116,58,0.15);
+      padding: 2.4rem;
+      position: relative;
+    }
+    .profile-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--orange), var(--caramel), transparent);
+    }
+    .profile-avatar {
+      width: 100%;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, rgba(160,98,42,0.2), rgba(42,31,24,0.6));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      margin-bottom: 1.6rem;
+      border: 1px solid rgba(200,116,58,0.1);
+    }
+    .profile-card-name {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.4rem;
+    }
+    .profile-card-en {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-bottom: 1.6rem;
+    }
+    .profile-card-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid rgba(200,116,58,0.1);
+      font-size: 0.78rem;
+    }
+    .profile-card-row:last-child { border-bottom: none; }
+    .profile-card-row span:first-child { color: var(--text-dim); letter-spacing: 0.1em; }
+    .profile-card-row span:last-child { color: var(--cream2); }
+
+    .profile-content { }
+    .section-eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--orange2);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 500;
+      line-height: 1.4;
+      margin-bottom: 2rem;
+    }
+    .section-title .dim { color: var(--text-dim); font-weight: 400; }
+
+    .profile-bio {
+      font-size: 0.92rem;
+      line-height: 2.4;
+      color: var(--text-dim);
+      margin-bottom: 3rem;
+      border-left: 2px solid rgba(200,116,58,0.3);
+      padding-left: 1.5rem;
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(200,116,58,0.1);
+    }
+    .stat-block {
+      background: var(--bg3);
+      padding: 1.6rem;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--orange2);
+      display: block;
+      line-height: 1.2;
+      margin-bottom: 0.4rem;
+    }
+    .stat-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+    }
+
+    /* ── CONTENT ── */
+    .content-section {
+      padding: 8rem 6rem;
+      background: var(--bg);
+      position: relative;
+    }
+    .content-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .content-header {
+      text-align: center;
+      margin-bottom: 5rem;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+    }
+    .content-card {
+      background: var(--bg2);
+      padding: 3rem;
+      border: 1px solid transparent;
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .content-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--orange), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .content-card:hover { border-color: rgba(200,116,58,0.2); transform: translateY(-3px); }
+    .content-card:hover::before { opacity: 1; }
+
+    .content-card-icon {
+      font-size: 2.4rem;
+      margin-bottom: 1.2rem;
+      display: block;
+    }
+    .content-card-tag {
+      font-size: 0.62rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--orange2);
+      margin-bottom: 0.8rem;
+    }
+    .content-card-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+    }
+    .content-card-desc {
+      font-size: 0.84rem;
+      line-height: 2;
+      color: var(--text-dim);
+    }
+
+    /* ── SCHEDULE ── */
+    .schedule-section {
+      padding: 8rem 6rem;
+      background: var(--bg2);
+    }
+    .schedule-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-top: 4rem;
+    }
+    .schedule-day {
+      background: var(--bg3);
+      padding: 1.2rem 0.8rem;
+      text-align: center;
+      border: 1px solid rgba(200,116,58,0.08);
+      transition: border-color 0.3s;
+    }
+    .schedule-day.active {
+      border-color: rgba(200,116,58,0.35);
+      background: rgba(160,98,42,0.12);
+    }
+    .schedule-day-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      margin-bottom: 0.8rem;
+    }
+    .schedule-day.active .schedule-day-label { color: var(--orange2); }
+    .schedule-day-content {
+      font-size: 0.72rem;
+      line-height: 1.8;
+      color: var(--text-dim);
+    }
+    .schedule-day.active .schedule-day-content { color: var(--cream2); }
+    .schedule-dot {
+      width: 6px; height: 6px;
+      background: var(--orange2);
+      border-radius: 50%;
+      margin: 0.8rem auto 0;
+      opacity: 0;
+    }
+    .schedule-day.active .schedule-dot { opacity: 1; }
+
+    /* ── GALLERY ── */
+    .gallery-section {
+      padding: 8rem 6rem;
+      background: var(--bg);
+    }
+    .gallery-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      margin-top: 4rem;
+    }
+    .gallery-item {
+      aspect-ratio: 16/9;
+      background: var(--bg3);
+      border: 1px solid rgba(200,116,58,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .gallery-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(160,98,42,0.15), transparent);
+    }
+    .gallery-item:hover { border-color: rgba(200,116,58,0.3); transform: scale(1.02); }
+    .gallery-item-icon { font-size: 2rem; position: relative; z-index: 1; }
+    .gallery-item-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── LINKS ── */
+    .links-section {
+      padding: 8rem 6rem;
+      background: var(--bg2);
+      text-align: center;
+    }
+    .links-inner { max-width: 600px; margin: 0 auto; }
+    .links-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-top: 4rem;
+    }
+    .link-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2rem;
+      background: var(--bg3);
+      border: 1px solid rgba(200,116,58,0.12);
+      text-decoration: none;
+      color: var(--cream2);
+      font-size: 0.86rem;
+      letter-spacing: 0.1em;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .link-item::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--orange);
+      transform: scaleY(0);
+      transition: transform 0.3s;
+    }
+    .link-item:hover {
+      border-color: rgba(200,116,58,0.3);
+      background: rgba(160,98,42,0.1);
+      padding-left: 2.4rem;
+    }
+    .link-item:hover::before { transform: scaleY(1); }
+    .link-item-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .link-icon { font-size: 1.2rem; }
+    .link-arrow {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      transition: color 0.3s, transform 0.3s;
+    }
+    .link-item:hover .link-arrow {
+      color: var(--orange2);
+      transform: translateX(4px);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 3rem 6rem;
+      background: var(--black-fur);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(200,116,58,0.15);
+    }
+    .footer-logo {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1rem;
+      letter-spacing: 0.2em;
+      color: var(--cream2);
+    }
+    .footer-copy {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s, transform 0.7s;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero-content { grid-template-columns: 1fr; padding: 3rem 1.5rem; }
+      .hero-right { height: 360px; }
+      .profile { padding: 5rem 1.5rem; }
+      .profile-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .profile-stats { grid-template-columns: repeat(3, 1fr); }
+      .content-section, .schedule-section, .gallery-section, .links-section { padding: 5rem 1.5rem; }
+      .content-grid { grid-template-columns: 1fr; }
+      .schedule-grid { grid-template-columns: repeat(4, 1fr); }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      footer { flex-direction: column; gap: 1rem; padding: 2rem 1.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">🐾 <span>猫屋敷</span>クルミ</a>
+  <ul class="nav-links">
+    <li><a href="#profile">Profile</a></li>
+    <li><a href="#content">Content</a></li>
+    <li><a href="#schedule">Schedule</a></li>
+    <li><a href="#links">Links</a></li>
+  </ul>
+  <a class="nav-btn" href="https://www.youtube.com/@kurumi" target="_blank">チャンネル登録</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-paws" id="heroPaws"></div>
+
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-tag">🐱 VTuber — Indie</div>
+      <h1 class="hero-name">
+        猫屋敷<br><span class="accent">クルミ</span>
+      </h1>
+      <p class="hero-name-en">Nekoyashiki Kurumi</p>
+      <p class="hero-desc">
+        ふわりとろける声と<br>
+        気ままな三毛猫の日常。<br>
+        雑談・ASMRでのんびりお届けします🐾
+      </p>
+      <div class="hero-tags">
+        <span class="tag-pill">🎙️ ASMR</span>
+        <span class="tag-pill">💬 雑談</span>
+        <span class="tag-pill">🌙 深夜配信</span>
+        <span class="tag-pill">🍂 秋冬が好き</span>
+        <span class="tag-pill">☕ コーヒー派</span>
+      </div>
+      <div class="hero-social">
+        <a class="social-btn yt" href="#">▶ YouTube</a>
+        <a class="social-btn x" href="#">𝕏 Twitter</a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="chara-frame">
+        <div class="chara-glow"></div>
+        <div class="chara-placeholder">
+          <span class="chara-icon">🐱</span>
+          <span class="chara-label">猫屋敷クルミ</span>
+          <span class="chara-sublabel">CHARACTER ILLUSTRATION</span>
+        </div>
+      </div>
+      <div class="float-badge b1">
+        <span class="badge-num">ASMR</span>
+        <span style="font-size:0.65rem;color:var(--text-dim);">癒し系配信</span>
+      </div>
+      <div class="float-badge b2">
+        <span class="badge-num">毎週</span>
+        <span style="font-size:0.65rem;color:var(--text-dim);">火・木・土 配信</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROFILE -->
+<section class="profile" id="profile">
+  <div class="profile-inner">
+    <div class="profile-card reveal">
+      <div class="profile-avatar">🐾</div>
+      <p class="profile-card-name">猫屋敷クルミ</p>
+      <p class="profile-card-en">Nekoyashiki Kurumi</p>
+      <div class="profile-card-row">
+        <span>種族</span><span>三毛猫VTuber</span>
+      </div>
+      <div class="profile-card-row">
+        <span>活動</span><span>雑談 / ASMR</span>
+      </div>
+      <div class="profile-card-row">
+        <span>配信</span><span>YouTube / Twitch</span>
+      </div>
+      <div class="profile-card-row">
+        <span>ファンネーム</span><span>くるみっこ</span>
+      </div>
+      <div class="profile-card-row">
+        <span>好きなもの</span><span>コーヒー・深夜・本</span>
+      </div>
+    </div>
+
+    <div class="profile-content reveal">
+      <p class="section-eyebrow">About</p>
+      <h2 class="section-title">
+        気ままな三毛猫の<br>
+        <span class="dim">ひとりごとを聞いてほしい</span>
+      </h2>
+      <p class="profile-bio">
+        どこか懐かしい夜に、ふと話しかけたくなる声を届けたくて活動を始めました。
+        雑談は日常のとりとめない話から深夜の哲学まで、思いのままに。
+        ASMRは耳かき・環境音・囁きを中心に、眠れない夜のお供になれたら嬉しいです。
+        猫みたいに気まぐれだけど、来てくれると必ず嬉しい顔します🐾
+      </p>
+      <div class="profile-stats">
+        <div class="stat-block">
+          <span class="stat-num">200+</span>
+          <span class="stat-label">配信アーカイブ</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">火木土</span>
+          <span class="stat-label">定期配信</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">2022</span>
+          <span class="stat-label">活動開始</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<section class="content-section" id="content">
+  <div class="content-inner">
+    <div class="content-header reveal">
+      <p class="section-eyebrow">Content</p>
+      <h2 class="section-title">配信コンテンツ</h2>
+    </div>
+    <div class="content-grid">
+      <div class="content-card reveal">
+        <span class="content-card-icon">🎙️</span>
+        <p class="content-card-tag">ASMR</p>
+        <h3 class="content-card-title">耳かき・囁き配信</h3>
+        <p class="content-card-desc">
+          マイクに近い距離でそっと話しかけるような囁き、
+          耳かき音・環境音を中心としたASMR配信。
+          眠れない夜・作業のBGMに。週1〜2回更新。
+        </p>
+      </div>
+      <div class="content-card reveal" style="transition-delay:0.1s">
+        <span class="content-card-icon">💬</span>
+        <p class="content-card-tag">雑談</p>
+        <h3 class="content-card-title">深夜の猫のひとりごと</h3>
+        <p class="content-card-desc">
+          日常のちいさな発見や、ふと思ったことをのんびり話す雑談枠。
+          リスナーと一緒にまったり過ごす時間が好きです。
+          週2回、夜22時スタートが多め。
+        </p>
+      </div>
+      <div class="content-card reveal" style="transition-delay:0.15s">
+        <span class="content-card-icon">🌙</span>
+        <p class="content-card-tag">深夜ラジオ</p>
+        <h3 class="content-card-title">夜ふかしラジオ</h3>
+        <p class="content-card-desc">
+          深夜0時すぎからこっそり始まる不定期配信。
+          眠れない夜に一緒にいるような、静かな時間を届けます。
+          告知なしで突然始まることも🌙
+        </p>
+      </div>
+      <div class="content-card reveal" style="transition-delay:0.2s">
+        <span class="content-card-icon">🍂</span>
+        <p class="content-card-tag">企画</p>
+        <h3 class="content-card-title">季節の特別配信</h3>
+        <p class="content-card-desc">
+          秋の夜長ASMR・冬の囲炉裏雑談など、
+          季節に合わせた特別配信を不定期で開催。
+          リスナーのリクエストで企画することも。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<section class="schedule-section" id="schedule">
+  <div class="schedule-inner">
+    <div class="reveal">
+      <p class="section-eyebrow">Schedule</p>
+      <h2 class="section-title">配信スケジュール</h2>
+    </div>
+    <div class="schedule-grid reveal">
+      <div class="schedule-day">
+        <p class="schedule-day-label">MON</p>
+        <p class="schedule-day-content">月</p>
+        <div class="schedule-dot"></div>
+      </div>
+      <div class="schedule-day active">
+        <p class="schedule-day-label">TUE</p>
+        <p class="schedule-day-content">火<br><span style="font-size:0.6rem;opacity:0.7;">雑談</span></p>
+        <div class="schedule-dot"></div>
+      </div>
+      <div class="schedule-day">
+        <p class="schedule-day-label">WED</p>
+        <p class="schedule-day-content">水</p>
+        <div class="schedule-dot"></div>
+      </div>
+      <div class="schedule-day active">
+        <p class="schedule-day-label">THU</p>
+        <p class="schedule-day-content">木<br><span style="font-size:0.6rem;opacity:0.7;">ASMR</span></p>
+        <div class="schedule-dot"></div>
+      </div>
+      <div class="schedule-day">
+        <p class="schedule-day-label">FRI</p>
+        <p class="schedule-day-content">金</p>
+        <div class="schedule-dot"></div>
+      </div>
+      <div class="schedule-day active">
+        <p class="schedule-day-label">SAT</p>
+        <p class="schedule-day-content">土<br><span style="font-size:0.6rem;opacity:0.7;">雑談</span></p>
+        <div class="schedule-dot"></div>
+      </div>
+      <div class="schedule-day">
+        <p class="schedule-day-label">SUN</p>
+        <p class="schedule-day-content">日</p>
+        <div class="schedule-dot"></div>
+      </div>
+    </div>
+    <p style="font-size:0.75rem;color:var(--text-dim);margin-top:1.5rem;letter-spacing:0.1em;">
+      ※ 配信開始は主に 22:00〜。Xで事前告知します。不定期配信あり。
+    </p>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section" id="gallery">
+  <div class="gallery-inner">
+    <div class="reveal">
+      <p class="section-eyebrow">Archive</p>
+      <h2 class="section-title">配信アーカイブ</h2>
+    </div>
+    <div class="gallery-grid reveal">
+      <div class="gallery-item">
+        <span class="gallery-item-icon">🎙️</span>
+        <span class="gallery-item-label">【ASMR】秋雨と耳かき</span>
+      </div>
+      <div class="gallery-item">
+        <span class="gallery-item-icon">💬</span>
+        <span class="gallery-item-label">【雑談】最近ハマってること</span>
+      </div>
+      <div class="gallery-item">
+        <span class="gallery-item-icon">🌙</span>
+        <span class="gallery-item-label">【深夜】眠れない夜に</span>
+      </div>
+      <div class="gallery-item">
+        <span class="gallery-item-icon">🎙️</span>
+        <span class="gallery-item-label">【ASMR】囁き読み聞かせ</span>
+      </div>
+      <div class="gallery-item">
+        <span class="gallery-item-icon">🍂</span>
+        <span class="gallery-item-label">【企画】秋の夜長ASMR</span>
+      </div>
+      <div class="gallery-item">
+        <span class="gallery-item-icon">☕</span>
+        <span class="gallery-item-label">【雑談】コーヒーと朝活</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LINKS -->
+<section class="links-section" id="links">
+  <div class="links-inner">
+    <div class="reveal">
+      <p class="section-eyebrow">Links</p>
+      <h2 class="section-title">リンク一覧</h2>
+    </div>
+    <div class="links-grid reveal">
+      <a class="link-item" href="#">
+        <span class="link-item-left">
+          <span class="link-icon">▶</span>
+          <span>YouTube チャンネル</span>
+        </span>
+        <span class="link-arrow">→</span>
+      </a>
+      <a class="link-item" href="#">
+        <span class="link-item-left">
+          <span class="link-icon">𝕏</span>
+          <span>Twitter / X</span>
+        </span>
+        <span class="link-arrow">→</span>
+      </a>
+      <a class="link-item" href="#">
+        <span class="link-item-left">
+          <span class="link-icon">🟣</span>
+          <span>Twitch</span>
+        </span>
+        <span class="link-arrow">→</span>
+      </a>
+      <a class="link-item" href="#">
+        <span class="link-item-left">
+          <span class="link-icon">🌸</span>
+          <span>Fanbox（支援・特典）</span>
+        </span>
+        <span class="link-arrow">→</span>
+      </a>
+      <a class="link-item" href="#">
+        <span class="link-item-left">
+          <span class="link-icon">📮</span>
+          <span>お便りフォーム</span>
+        </span>
+        <span class="link-arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">🐾 猫屋敷クルミ</span>
+  <span class="footer-copy">© 2025 Nekoyashiki Kurumi. All rights reserved.</span>
+</footer>
+
+<script>
+  // カスタムカーソル
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  (function animCursor() {
+    cursor.style.left = mx + 'px';
+    cursor.style.top  = my + 'px';
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animCursor);
+  })();
+
+  // 肉球アニメ生成
+  const pawsEl = document.getElementById('heroPaws');
+  const pawEmojis = ['🐾'];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('span');
+    p.className = 'paw';
+    p.textContent = pawEmojis[0];
+    const r = (Math.random() * 60 - 30) + 'deg';
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      --r:${r};
+      animation-delay:${Math.random()*6}s;
+      animation-duration:${6 + Math.random()*4}s;
+      font-size:${0.8 + Math.random()*1.4}rem;
+    `;
+    pawsEl.appendChild(p);
+  }
+
+  // スクロールリビール
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => obs.observe(el));
+
+  // ナビ透過
+  window.addEventListener('scroll', () => {
+    document.querySelector('nav').style.background =
+      window.scrollY > 60
+        ? 'rgba(26,20,16,0.92)'
+        : 'rgba(26,20,16,0.7)';
+  });
+</script>
+</body>
+</html>
